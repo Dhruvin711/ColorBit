@@ -1,60 +1,72 @@
 import React, { useState, useEffect } from "react";
 import Tile from "./Components/Tile";
+import axios from 'axios';
 
 import "./styles.css";
 
 function App() {
     const [gameState, setGameState] = useState({
-        grid: [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ],
+        grid: Array.from({ length: 10 }, () => Array(10).fill(0)),
         playerScore: 0,
         isGameRunning: false,
         redTileSpeed: 250,
     });
 
+    const getGrid = async (req, res) => {
+        const apiURL = 'http://127.0.0.1:8000';
+
+        try {
+            const { data } = await axios.get(apiURL);
+            const randomGrid = data.grid;
+
+            setGameState({
+                grid: randomGrid,
+                playerScore: 0,
+                isGameRunning: false,
+                redTileSpeed: 250,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getGrid();
+    }, []);
+
     const [redIndex, setRedIndex] = useState(0);
 
     function startGame() {
-        setGameState({...gameState, isGameRunning: true, playerScore: 0});
+        setGameState({ ...gameState, isGameRunning: true, playerScore: 0 });
     }
 
     function stopGame() {
-        setGameState({...gameState, isGameRunning: false});
+        setGameState({ ...gameState, isGameRunning: false });
         setRedIndex(0);
     }
 
     function changeLevel(event) {
-        const newSpeed = 250 - 50*(event.target.value-1);
-        setGameState({...gameState, redTileSpeed: newSpeed});
+        const newSpeed = 250 - 50 * (event.target.value - 1);
+        setGameState({ ...gameState, redTileSpeed: newSpeed });
     }
 
     function updateScore(tileColor) {
         var score = gameState.playerScore;
-        if(tileColor === "blue") score += 10;
-        else if(tileColor === "red") score += -10;
+        if (tileColor === "blue") score += 10;
+        else if (tileColor === "red") score += -10;
 
         console.log(score);
 
-        if(gameState.isGameRunning){
-            setGameState({...gameState, playerScore: score});
+        if (gameState.isGameRunning) {
+            setGameState({ ...gameState, playerScore: score });
         }
     }
 
     useEffect(() => {
         let game;
-        if(gameState.isGameRunning){
+        if (gameState.isGameRunning) {
             game = setInterval(() => {
-                setRedIndex((prevRedIndex) => (prevRedIndex + 2)%10);
+                setRedIndex((prevRedIndex) => (prevRedIndex + 2) % 10);
             }, gameState.redTileSpeed)
         }
 
@@ -85,8 +97,8 @@ function App() {
                             row.map((col, colIndex) => (
                                 <Tile
                                     key={rowIndex * 10 + colIndex}
-                                    color={`${ (colIndex === redIndex || colIndex === redIndex + 1 ? "red" : (col === 1 ? "blue" : "#000"))}`}
-                                    onClick={() => updateScore(`${ (colIndex === redIndex || colIndex === redIndex + 1 ? "red" : (col === 1 ? "blue" : "#000"))}`)}
+                                    color={`${(colIndex === redIndex || colIndex === redIndex + 1 ? "red" : (col === 1 ? "blue" : "#000"))}`}
+                                    onClick={() => updateScore(`${(colIndex === redIndex || colIndex === redIndex + 1 ? "red" : (col === 1 ? "blue" : "#000"))}`)}
                                 />
                             ))
                         ))
