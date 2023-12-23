@@ -13,7 +13,7 @@ function App() {
     });
 
     const getGrid = async (req, res) => {
-        const apiURL = 'http://127.0.0.1:8000';
+        const apiURL = 'http://127.0.0.1:8000' || 'https://codebit-server.onrender.com';
 
         try {
             const { data } = await axios.get(apiURL);
@@ -50,38 +50,68 @@ function App() {
         setGameState({ ...gameState, redTileSpeed: newSpeed });
     }
 
+    const [popupMessage, setPopupMessage] = useState(null);
+
     function updateScore(tileColor) {
-        var score = gameState.playerScore;
-        if (tileColor === "blue") score += 10;
-        else if (tileColor === "red") score += -10;
-
-        console.log(score);
-
         if (gameState.isGameRunning) {
-            setGameState({ ...gameState, playerScore: score });
+            let scoreChange = 0;
+
+            if (tileColor === "blue") {
+                scoreChange = 10;
+                setPopupMessage("+10, Good Job!");
+            }
+            else if (tileColor === "red") {
+                scoreChange = -10;
+                setPopupMessage("-10, Oops!");
+            }
+
+            const newScore = gameState.playerScore + scoreChange;
+            setGameState({ ...gameState, playerScore: newScore });
+
+            // Hide popup message after 1 second
+            setTimeout(() => {
+                setPopupMessage(null);
+            }, 1000);
         }
     }
 
     useEffect(() => {
         let game;
+        let direction = 1; // 1 for forward, -1 for backward
+        let currentIndex = 0;
+
         if (gameState.isGameRunning) {
             game = setInterval(() => {
-                setRedIndex((prevRedIndex) => (prevRedIndex + 2) % 10);
-            }, gameState.redTileSpeed)
+                setRedIndex((prevRedIndex) => {
+                    currentIndex = prevRedIndex + direction * 2;
+
+                    if (currentIndex === 8) {
+                        // If reached the end, change direction to backward
+                        direction = -1;
+                    } else if (currentIndex === 0) {
+                        // If reached the start, change direction to forward
+                        direction = 1;
+                    }
+
+                    return currentIndex;
+                });
+            }, gameState.redTileSpeed);
         }
 
-        return () => (clearInterval(game));
-    }, [gameState.isGameRunning])
+        return () => clearInterval(game);
+    }, [gameState.isGameRunning]);
+
 
     return (
         <div className="container">
             <h1>ColorBit Challange</h1>
             <div className="game-container">
                 <div className="controls-container">
-                    <button className="btn btn-success" onClick={startGame}>Start Game</button>
-                    <button className="btn btn-danger" onClick={stopGame}>Stop Game</button>
+                    <button className="btn btn-success" onClick={startGame} style={{cursor: `${gameState.isGameRunning ? "not-allowed" : ""}`}}>Start Game</button>
+                    <button className="btn btn-danger" onClick={stopGame} style={{cursor: `${!gameState.isGameRunning ? "not-allowed" : ""}`}}>Stop Game</button>
 
-                    <select className="level-container form-select" onChange={changeLevel} disabled={gameState.isGameRunning}>
+                    <select className="level-container form-select" onChange={changeLevel} disabled={gameState.isGameRunning}
+                        style={{cursor: `${gameState.isGameRunning ? "not-allowed" : "pointer"}`}}>
                         <option value="1">Level 1</option>
                         <option value="2">Level 2</option>
                         <option value="3">Level 3</option>
@@ -108,6 +138,12 @@ function App() {
                 <div className="score-container">
                     <span>Score</span>: {gameState.playerScore}
                 </div>
+
+                {popupMessage && (
+                    <div className="popup">
+                        {popupMessage}
+                    </div>
+                )}
             </div>
         </div>
     )

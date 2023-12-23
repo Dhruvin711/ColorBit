@@ -74,19 +74,55 @@ body {
     0% {
         opacity: 0;
     }
+
     20% {
         opacity: 1;
     }
+
     40% {
         opacity: 0;
     }
+
     60% {
         opacity: 1;
     }
+
     80% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
+    }
+}
+
+.popup {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+    z-index: 1000;
+    animation: fadeInOut 1s ease-out;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }
