@@ -13,11 +13,29 @@ function App() {
     });
 
     const getGrid = async (req, res) => {
-        const apiURL = 'http://127.0.0.1:8000' || 'https://colorbit-server.onrender.com';
-
+        const apiURL = 'https://colorbit-server.onrender.com';
         try {
             const { data } = await axios.get(apiURL);
             const randomGrid = data.grid;
+            
+            console.log(apiURL);
+            
+            setGameState({
+                grid: randomGrid,
+                playerScore: 0,
+                isGameRunning: false,
+                redTileSpeed: 250,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+        
+        const localApiURL = 'http://127.0.0.1:8000';
+        try {
+            const { data } = await axios.get(localApiURL);
+            const randomGrid = data.grid;
+
+            console.log(localApiURL);
 
             setGameState({
                 grid: randomGrid,
