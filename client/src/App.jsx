@@ -13,7 +13,7 @@ function App() {
     });
 
     const getGrid = async (req, res) => {
-        const apiURL = 'http://127.0.0.1:8000' || 'https://codebit-server.onrender.com';
+        const apiURL = 'http://127.0.0.1:8000' || 'https://colorbit-server.onrender.com';
 
         try {
             const { data } = await axios.get(apiURL);

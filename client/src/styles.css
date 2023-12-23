@@ -126,3 +126,47 @@ body {
         opacity: 0;
     }
 }
+
+@media (max-width: 1000px) {
+    .grid-container {
+        padding: 10px;
+        margin: 5px;
+        grid-template-columns: repeat(10, 5vh);
+        grid-template-rows: repeat(10, 5vh);
+    }
+    
+    .tile-block {
+        width: 5vh;
+        height: 5vh;
+        border-radius: 30%;
+        margin: 3px auto;
+        z-index: 5;
+    }
+
+    .game-container {
+        flex-direction: column;
+    }
+
+    .controls-container {
+        margin-top: 5vh;
+        width: 100%;
+        flex-direction: row;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: repeat(10, 4vh);
+        grid-template-rows: repeat(10, 4vh);
+    }
+    
+    .tile-block {
+        width: 4vh;
+        height: 4vh;
+    }
+
+    .controls-container {
+        margin-top: 3vh;
+    }
+}
