@@ -55,6 +55,7 @@ body {
     grid-template-columns: repeat(10, 7vh);
     grid-template-rows: repeat(10, 7vh);
     gap: 3px;
+    place-items: center;
 }
 
 .tile-block {
@@ -127,6 +128,11 @@ body {
     }
 }
 
+.loader-container {
+    padding-top: 60vh;
+    padding-left: 65vh;
+}
+
 @media (max-width: 1000px) {
     .grid-container {
         padding: 10px;
@@ -152,6 +158,11 @@ body {
         width: 100%;
         flex-direction: row;
     }
+
+    .loader-container {
+        padding-top: 45vh;
+        padding-left: 50vh;
+    }
 }
 
 
@@ -168,5 +179,10 @@ body {
 
     .controls-container {
         margin-top: 3vh;
+    }
+
+    .loader-container {
+        padding-top: 35vh;
+        padding-left: 40vh;
     }
 }

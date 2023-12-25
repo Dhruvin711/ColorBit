@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Tile from "./Components/Tile";
 import axios from 'axios';
+import {BarLoader} from "react-spinners";
 
 import "./styles.css";
 
@@ -12,9 +13,12 @@ function App() {
         redTileSpeed: 250,
     });
 
+    const [loading, setLoading] = useState(false);
+
     const getGrid = async (req, res) => {
         const apiURL = 'https://colorbit-server.onrender.com';
         try {
+            setLoading(true);
             const { data } = await axios.get(apiURL);
             const randomGrid = data.grid;
             
@@ -26,12 +30,15 @@ function App() {
                 isGameRunning: false,
                 redTileSpeed: 250,
             });
+            setLoading(false);
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
         
         const localApiURL = 'http://127.0.0.1:8000';
         try {
+            setLoading(true);
             const { data } = await axios.get(localApiURL);
             const randomGrid = data.grid;
 
@@ -43,8 +50,10 @@ function App() {
                 isGameRunning: false,
                 redTileSpeed: 250,
             });
+            setLoading(false);
         } catch (error) {
             console.log(error);
+            setLoading(false);
         }
     };
 
@@ -140,7 +149,12 @@ function App() {
 
                 {/* GRID : 10x10 */}
                 <div className="grid-container">
-                    {
+                    {loading ? 
+                        <div className="loader-container">
+                            Loading...
+                            <BarLoader color="white" />
+                        </div>
+                        :
                         gameState.grid.map((row, rowIndex) => (
                             row.map((col, colIndex) => (
                                 <Tile
